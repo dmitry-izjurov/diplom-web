@@ -17,7 +17,9 @@ Route::get('/', function () {
     return view('main');
 });
 
-Auth::routes();
+Route::get('/', [\App\Http\Controllers\IsSellTicketController::class, 'index']);
+
+Auth::routes(['register' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
