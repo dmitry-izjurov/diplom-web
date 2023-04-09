@@ -11,6 +11,18 @@
 </head>
 <body>
     <div id="app">
+        @if (Auth::check())
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item link_login" href="{{ route('logout') }}"
+                    onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();">
+                    {{ __('Logout') }}
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+            </div>
+        @endif
         <main class="py-4">
             @yield('content')
         </main>

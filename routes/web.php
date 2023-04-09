@@ -17,11 +17,13 @@ Route::get('/', function () {
     return view('main');
 });
 
-Route::get('/', [\App\Http\Controllers\IsSellTicketController::class, 'index']);
-
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
+Route::get('/home', [\App\Http\Controllers\HallsController::class, 'index'])->name('halls.index');
+Route::post('home/', [\App\Http\Controllers\HallsController::class, 'store'])->name('halls.store');
+Route::patch('/update-hall', [\App\Http\Controllers\HallsController::class, 'update'])->name('halls.update');
+Route::delete('/delete-hall/{id}', [\App\Http\Controllers\HallsController::class, 'destroy'])->name('halls.destroy');
 
 Route::get('/laravel', function () {
     return view('welcome');

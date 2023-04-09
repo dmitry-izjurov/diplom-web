@@ -26,7 +26,6 @@
             @endauth
         </div>
     @endif
-    @if ($isSellTicket[0]->isSellTicket)
         <nav class="page-nav">
             <a class="page-nav__day page-nav__day_today" href="#">
                 <span class="page-nav__day-week">Пн</span><span class="page-nav__day-number">31</span>
@@ -156,7 +155,5 @@
                 </div>
             </section>
         </main>
-    @else <div class="page__stop-sell">Продажа билетов временно приостановлена</div>
-    @endif
 </body>
 </html>
