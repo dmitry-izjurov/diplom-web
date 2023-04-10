@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Film;
+use App\Models\Halls;
+use App\Models\Seance;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +26,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $halls = Halls::all();
+        $films= Film::all();
+        $seances = Seance::all();
+        return view('home',
+            ['halls' => $halls,
+             'films' => $films,
+             'seances' => $seances]);
     }
 }

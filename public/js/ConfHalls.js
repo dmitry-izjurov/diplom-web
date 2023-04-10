@@ -70,10 +70,10 @@ class ConfHall {
             let arr = [];
             if (Number.isNaN(+this.elemInputChairs.value)) {
                 this.elemInputChairs.value = 8;
-            } else if (+this.elemInputChairs.value < 3) {
-                this.elemInputChairs.value = 3;
-            } else if (+this.elemInputChairs.value > 20) {
-                this.elemInputChairs.value = 20;
+            } else if (+this.elemInputChairs.value < 5) {
+                this.elemInputChairs.value = 5;
+            } else if (+this.elemInputChairs.value > 16) {
+                this.elemInputChairs.value = 16;
             }
 
             if (+this.elemInputChairs.value > this.elemInputChairsValueOld) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Film;
 use App\Models\Halls;
 use Illuminate\Http\Request;
 
@@ -12,8 +13,7 @@ class HallsController extends Controller
      */
     public function index()
     {
-        $halls = Halls::all();
-        return view('home', ['halls' => $halls]);
+        //
     }
 
     /**
@@ -31,10 +31,9 @@ class HallsController extends Controller
     {
         $halls = new Halls();
         $halls->title = $request->title;
-        $halls->is_sell_ticket = false;
         $halls->save();
 
-        return redirect()->route('halls.index');
+        return redirect()->route('home.index');
     }
 
     /**
@@ -73,13 +72,13 @@ class HallsController extends Controller
 
         if ($request->types_of_chairs) {
             makeUpdate($request->types_of_chairs, $halls, 'types_of_chairs');
-        }
-
-        if ($request->price_of_chair) {
+        } elseif ($request->price_of_chair) {
             makeUpdate($request->price_of_chair, $halls, 'price_of_chair');
+        } elseif ($request->is_sell_ticket) {
+            makeUpdate($request->is_sell_ticket, $halls, 'is_sell_ticket');
         }
 
-        return redirect()->route('halls.index');
+        return redirect()->route('home.index');
     }
 
     /**
@@ -92,6 +91,6 @@ class HallsController extends Controller
             $hall->delete();
         }
 
-        return redirect()->route('halls.index');
+        return redirect()->route('home.index');
     }
 }

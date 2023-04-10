@@ -549,3 +549,15 @@ input[type='radio'], input[type='submit'], button, .conf-step__header, select {
     text-decoration: none;
     color: #63536C;
 }
+
+.conf-step__button.conf-step__button_stop {
+    background-color: #d35050;
+}
+
+.conf-step__button.conf-step__button_stop:hover {
+    background-color: #e93c3c;
+}
+
+.conf-step__button.conf-step__button_stop:focus {
+    background-color: #e93c3c;
+}

@@ -56,11 +56,11 @@
                     <p class="conf-step__paragraph">Укажите количество рядов и максимальное количество кресел в ряду:</p>
                     <div class="conf-step__legend">
                         <label class="conf-step__label">Рядов, шт
-                            <input id="input-rows" type="text" class="conf-step__input" placeholder="10">
+                            <input id="input-rows" type="number" class="conf-step__input" placeholder="10">
                         </label>
                         <span class="multiplier">x</span>
                         <label class="conf-step__label">Мест, шт
-                            <input id="input-chairs" type="text" class="conf-step__input" placeholder="8">
+                            <input id="input-chairs" type="number" class="conf-step__input" placeholder="8">
                         </label>
                     </div>
                     <p class="conf-step__paragraph">Теперь вы можете указать типы кресел на схеме зала:</p>
@@ -116,13 +116,13 @@
                 <p class="conf-step__paragraph">Установите цены для типов кресел:</p>
                 <div class="conf-step__legend">
                     <label class="conf-step__label">Цена, рублей
-                        <input id="input-st-chair" type="text" class="conf-step__input" placeholder="0">
+                        <input id="input-st-chair" type="number" class="conf-step__input" placeholder="0">
                     </label>
                     за <span class="conf-step__chair conf-step__chair_standart"></span> обычные кресла
                 </div>
                 <div class="conf-step__legend">
                     <label class="conf-step__label">Цена, рублей
-                        <input id="input-vip-chair" type="text" class="conf-step__input" placeholder="0">
+                        <input id="input-vip-chair" type="number" class="conf-step__input" placeholder="0">
                     </label>
                     за <span class="conf-step__chair conf-step__chair_vip"></span> VIP кресла
                 </div>
@@ -147,42 +147,48 @@
             </header>
             <div class="conf-step__wrapper">
                 <p class="conf-step__paragraph">
-                    <button class="conf-step__button conf-step__button-accent">Добавить фильм</button>
+                    <button id="add-film" class="conf-step__button conf-step__button-accent">Добавить фильм</button>
                 </p>
+
                 <div class="conf-step__movies">
-                    <div class="conf-step__movie">
+                @if (count($films) > 0)
+                    @foreach($films as $film)
+                    <div data-id="{{ $film->id }}" class="film conf-step__movie">
                         <img class="conf-step__movie-poster" alt="poster" src="i/poster.png">
-                        <h3 class="conf-step__movie-title">Звёздные войны XXIII: Атака клонированных клонов</h3>
-                        <p class="conf-step__movie-duration">130 минут</p>
+                        <h3 class="conf-step__movie-title">{{ $film['title'] }}</h3>
+                        <p class="conf-step__movie-duration">{{ $film['duration'] }} минут</p>
                     </div>
-
-                    <div class="conf-step__movie">
-                        <img class="conf-step__movie-poster" alt="poster" src="i/poster.png">
-                        <h3 class="conf-step__movie-title">Миссия выполнима</h3>
-                        <p class="conf-step__movie-duration">120 минут</p>
-                    </div>
-
-                    <div class="conf-step__movie">
-                        <img class="conf-step__movie-poster" alt="poster" src="i/poster.png">
-                        <h3 class="conf-step__movie-title">Серая пантера</h3>
-                        <p class="conf-step__movie-duration">90 минут</p>
-                    </div>
-
-                    <div class="conf-step__movie">
-                        <img class="conf-step__movie-poster" alt="poster" src="i/poster.png">
-                        <h3 class="conf-step__movie-title">Движение вбок</h3>
-                        <p class="conf-step__movie-duration">95 минут</p>
-                    </div>
-
-                    <div class="conf-step__movie">
-                        <img class="conf-step__movie-poster" alt="poster" src="i/poster.png">
-                        <h3 class="conf-step__movie-title">Кот Да Винчи</h3>
-                        <p class="conf-step__movie-duration">100 минут</p>
-                    </div>
+                    @endforeach
+                @else <p class="conf-step__paragraph">Нет доступных фильмов</p>
+                @endif
                 </div>
-
+                <p class="conf-step__paragraph">
+                    <button id="add-seance" class="conf-step__button conf-step__button-accent">Добавить сеанс</button>
+                </p>
                 <div class="conf-step__seances">
-                    <div class="conf-step__seances-hall">
+                    @if (count($seances) > 0)
+                        @foreach($halls as $hall)
+                        <div class="conf-step__seances-hall" data-hall-id="{{ $hall['id'] }}">
+                            <h3 class="conf-step__seances-title">{{ $hall['title'] }}</h3>
+                            <div class="conf-step__seances-timeline">
+                                @foreach($seances as $seance)
+                                    @if ($seance['hall_id'] === $hall['id'])  
+                                        @foreach($films as $film)
+                                            @if ($film['id'] === $seance['film_id'])
+                                            <div class="conf-step__seances-movie" data-seance-id="{{ $seance['id'] }}" data-film-duration="{{ $film['duration'] }}" data-seance-time-begin="{{ $seance['time_begin'] }}">
+                                                <p class="conf-step__seances-movie-title">{{ $film['title'] }}</p>
+                                                <p class="conf-step__seances-movie-start">{{ $seance['time_begin'] }}</p>
+                                            </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                        @endforeach
+                    @else <p class="conf-step__paragraph">Нет доступных сеансов</p>
+                    @endif
+                    <!-- <div class="conf-step__seances-hall">
                         <h3 class="conf-step__seances-title">Зал 1</h3>
                         <div class="conf-step__seances-timeline">
                             <div class="conf-step__seances-movie" style="width: 60px; background-color: rgb(133, 255, 137); left: 0;">
@@ -211,13 +217,8 @@
                                 <p class="conf-step__seances-movie-start">22:00</p>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
-
-                <fieldset class="conf-step__buttons text-center">
-                    <button class="conf-step__button conf-step__button-regular">Отмена</button>
-                    <input type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent">
-                </fieldset>
             </div>
         </section>
 
@@ -231,12 +232,12 @@
                     <ul class="conf-step__selectors-box">
                         @foreach($halls as $key => $hall)
                             @if ($key !== 0)
-                                <li>
+                                <li class="conf-hall_sell" data-id="{{ $hall->id }}" data-conf-hall-sell="{{ $hall['is_sell_ticket'] }}">
                                     <input type="radio" class="conf-step__radio" name="sale-hall" value="{{ $hall['title'] }}">
                                     <span class="conf-step__selector">{{ $hall['title'] }}</span>
                                 </li>
                                 @else
-                                    <li>
+                                    <li class="conf-hall_sell" data-id="{{ $hall->id }}" data-conf-hall-sell="{{ $hall['is_sell_ticket'] }}">
                                        <input type="radio" class="conf-step__radio" name="sale-hall" value="{{ $hall['title'] }}" checked>
                                        <span class="conf-step__selector">{{ $hall['title'] }}</span>
                                     </li>
@@ -244,7 +245,12 @@
                         @endforeach
                     </ul>
                     <p class="conf-step__paragraph">Всё готово, теперь можно:</p>
-                    <button class="conf-step__button conf-step__button-accent">Открыть продажу билетов</button>
+                    <form name="form-is_sell_ticket" action="{{ route('halls.update') }}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="is_sell_ticket" value="">
+                    </form>
+                    
                     @else <p class="conf-step__paragraph">Нет доступных залов</p>
                 @endif
             </div>
@@ -299,7 +305,7 @@
             });
         });
 
-        {{--    Для удаления из БД  залов    --}}
+        {{--    Для удаления залов из БД    --}}
         const halls = document.querySelectorAll('.hall');
         const methodDelete = '{{ method_field('DELETE') }}';
         const elemPopupDeleteHall = function(url, method, csrf_field, title) {
@@ -348,8 +354,113 @@
                 elemPopup.remove('.popup');
             });
         }));
+
+        {{--    Для записи в БД новых фильмов    --}}
+        let urlStoreFilm = '{{ route('films.store') }}';
+        const buttonAddFilm = document.getElementById('add-film');
+        const elemPopupAddFilm = function(url, csrf_field) {
+            return `
+                <div class="popup">
+                    <div class="popup__container">
+                        <div class="popup__content">
+                            <div class="popup__header">
+                                <h2 class="popup__title">
+                                    Добавление фильма
+                                    <a class="popup__dismiss" href="#"><img src="i/close.png" alt="Закрыть"></a>
+                                </h2>
+                            </div>
+                            <div class="popup__wrapper">
+                                <form action="${url}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                                    ${csrf_field}
+                                    <label class="conf-step__label conf-step__label-fullsize" for="name">Название фильма
+                                        <input class="conf-step__input" type="text" placeholder="Например, &laquo;Гражданин Кейн&raquo;" name="title" required>
+                                    </label>
+                                    <label class="conf-step__label conf-step__label-fullsize" for="name">Продолжительность фильма, мин
+                                        <input class="conf-step__input" type="text" placeholder="Например, &laquo;90&raquo;" name="duration" required>
+                                    </label>
+                                    <div class="conf-step__buttons text-center">
+                                        <input type="submit" value="Добавить фильм" class="conf-step__button conf-step__button-accent">
+                                        <button id="cancel-add-film" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        buttonAddFilm.addEventListener('click', () => {
+            elemBody.insertAdjacentHTML('afterbegin', elemPopupAddFilm(urlStoreFilm, csrf_field));
+            const elemPopup = document.querySelector('.popup');
+            elemPopup.classList.add('active');
+            const elemClosePopup = document.querySelector('.popup__dismiss');
+            elemClosePopup.addEventListener('click', () => {
+                elemPopup.remove('.popup');
+            });
+            const buttonCancelAddFilm = document.getElementById('cancel-add-film');
+            buttonCancelAddFilm.addEventListener('click', () => {
+                elemPopup.remove('.popup');
+            });
+        });
+
+        {{--    Для удаления фильмов из БД    --}}
+        const films = document.querySelectorAll('.film');
+        const elemPopupDeleteFilm = function(url, method, csrf_field, title) {
+            return `
+                <div class="popup">
+                    <div class="popup__container">
+                        <div class="popup__content">
+                            <div class="popup__header">
+                                <h2 class="popup__title">
+                                    Удаление фильма
+                                    <a class="popup__dismiss" href="#"><img src="i/close.png" alt="Закрыть"></a>
+                                </h2>
+                            </div>
+                            <div class="popup__wrapper">
+                                <form action="${url}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                                    ${csrf_field}
+                                    ${method}
+                                    <p class="conf-step__paragraph">Вы действительно хотите удалить фильм ${title}?</p>
+                                    <div class="conf-step__buttons text-center">
+                                        <input type="submit" value="Удалить" class="conf-step__button conf-step__button-accent">
+                                        <button id="cancel-delete-hall" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        Array.from(films).forEach(f => f.addEventListener('click', () => {
+            const id = f.dataset.id;
+            let urlDestroyFilm = '{{ route('films.destroy', ":id") }}';
+            urlDestroyFilm = urlDestroyFilm.replace(':id', id);
+
+            const title = f.querySelector('h3').textContent;
+            elemBody.insertAdjacentHTML('afterbegin', elemPopupDeleteFilm(urlDestroyFilm, methodDelete, csrf_field, title));
+            const elemPopup = document.querySelector('.popup');
+            elemPopup.classList.add('active');
+            const elemClosePopup = document.querySelector('.popup__dismiss');
+            elemClosePopup.addEventListener('click', () => {
+                elemPopup.remove('.popup');
+            });
+            const buttonCancelDeleteHall = document.getElementById('cancel-delete-hall');
+            buttonCancelDeleteHall.addEventListener('click', () => {
+                elemPopup.remove('.popup');
+            });
+        }));
+
+        {{--    Отображение сеансов    --}}
+        
+
+        
+
     </script>
     <script src="js/ConfHalls.js"></script>
     <script src="js/ConfPriceHalls.js"></script>
+    <script src="js/ConfIsSellTicket.js"></script>
+    <script src="js/ConfSeances.js"></script>
 </div>
 @endsection
