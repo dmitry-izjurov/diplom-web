@@ -28,7 +28,13 @@ class SeanceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $seance = new Seance();
+        $seance->time_begin = $request->start_time;
+        $seance->film_id = $request->film;
+        $seance->hall_id = $request->hall;
+        $seance->save();
+
+        return redirect()->route('home.index');
     }
 
     /**
@@ -58,8 +64,14 @@ class SeanceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Seance $seance)
+    public function destroy($id)
     {
-        //
+        $seance = Seance::find($id);
+
+        if ($seance) {
+            $seance->delete();
+        }
+
+        return redirect()->route('home.index');
     }
 }

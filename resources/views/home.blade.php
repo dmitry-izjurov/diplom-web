@@ -188,36 +188,6 @@
                         @endforeach
                     @else <p class="conf-step__paragraph">Нет доступных сеансов</p>
                     @endif
-                    <!-- <div class="conf-step__seances-hall">
-                        <h3 class="conf-step__seances-title">Зал 1</h3>
-                        <div class="conf-step__seances-timeline">
-                            <div class="conf-step__seances-movie" style="width: 60px; background-color: rgb(133, 255, 137); left: 0;">
-                                <p class="conf-step__seances-movie-title">Миссия выполнима</p>
-                                <p class="conf-step__seances-movie-start">00:00</p>
-                            </div>
-                            <div class="conf-step__seances-movie" style="width: 60px; background-color: rgb(133, 255, 137); left: 360px;">
-                                <p class="conf-step__seances-movie-title">Миссия выполнима</p>
-                                <p class="conf-step__seances-movie-start">12:00</p>
-                            </div>
-                            <div class="conf-step__seances-movie" style="width: 65px; background-color: rgb(202, 255, 133); left: 420px;">
-                                <p class="conf-step__seances-movie-title">Звёздные войны XXIII: Атака клонированных клонов</p>
-                                <p class="conf-step__seances-movie-start">14:00</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="conf-step__seances-hall">
-                        <h3 class="conf-step__seances-title">Зал 2</h3>
-                        <div class="conf-step__seances-timeline">
-                            <div class="conf-step__seances-movie" style="width: 65px; background-color: rgb(202, 255, 133); left: 595px;">
-                                <p class="conf-step__seances-movie-title">Звёздные войны XXIII: Атака клонированных клонов</p>
-                                <p class="conf-step__seances-movie-start">19:50</p>
-                            </div>
-                            <div class="conf-step__seances-movie" style="width: 60px; background-color: rgb(133, 255, 137); left: 660px;">
-                                <p class="conf-step__seances-movie-title">Миссия выполнима</p>
-                                <p class="conf-step__seances-movie-start">22:00</p>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </section>
@@ -336,13 +306,54 @@
             `;
         };
 
+        const elemPopupCancelDeleteHall = function(title) {
+            return `
+                <div class="popup">
+                    <div class="popup__container">
+                        <div class="popup__content">
+                            <div class="popup__header">
+                                <h2 class="popup__title">
+                                    Удаление зала
+                                    <a class="popup__dismiss" href="#"><img src="i/close.png" alt="Закрыть"></a>
+                                </h2>
+                            </div>
+                            <div class="popup__wrapper">
+                                <p class="conf-step__paragraph">${title} имеет действующие сеансы. Его нельзя удалять</p>
+                                <div class="conf-step__buttons text-center">
+                                    <button id="cancel-delete-hall" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
         Array.from(halls).forEach(h => h.addEventListener('click', () => {
+            const hallsblock = [];
+            let hallblock;
+
+            @foreach($halls as $hall)
+                @foreach($seances as $seance)
+                    @if ($hall['id'] === $seance['hall_id'])
+                        hallblock = hallsblock.find(hb => hb === '{{ $hall['id'] }}');
+                        if (!hallblock) {
+                            hallsblock.push('{{ $hall['id'] }}');
+                        }
+                    @endif
+                @endforeach
+            @endforeach
+
             const id = h.dataset.id;
             let urlDestroyHall = '{{ route('halls.destroy', ":id") }}';
             urlDestroyHall = urlDestroyHall.replace(':id', id);
 
             const title = h.closest('li').textContent;
-            elemBody.insertAdjacentHTML('afterbegin', elemPopupDeleteHall(urlDestroyHall, methodDelete, csrf_field, title));
+            if (hallsblock.find(hb => hb === id)) {
+                elemBody.insertAdjacentHTML('afterbegin', elemPopupCancelDeleteHall(title));
+            } else {
+                elemBody.insertAdjacentHTML('afterbegin', elemPopupDeleteHall(urlDestroyHall, methodDelete, csrf_field, title));
+            }
             const elemPopup = document.querySelector('.popup');
             elemPopup.classList.add('active');
             const elemClosePopup = document.querySelector('.popup__dismiss');
@@ -376,7 +387,7 @@
                                         <input class="conf-step__input" type="text" placeholder="Например, &laquo;Гражданин Кейн&raquo;" name="title" required>
                                     </label>
                                     <label class="conf-step__label conf-step__label-fullsize" for="name">Продолжительность фильма, мин
-                                        <input class="conf-step__input" type="text" placeholder="Например, &laquo;90&raquo;" name="duration" required>
+                                        <input class="conf-step__input" type="number" min="30" max="220" placeholder="Например, &laquo;90&raquo;" name="duration" required>
                                     </label>
                                     <div class="conf-step__buttons text-center">
                                         <input type="submit" value="Добавить фильм" class="conf-step__button conf-step__button-accent">
@@ -423,7 +434,7 @@
                                     <p class="conf-step__paragraph">Вы действительно хотите удалить фильм ${title}?</p>
                                     <div class="conf-step__buttons text-center">
                                         <input type="submit" value="Удалить" class="conf-step__button conf-step__button-accent">
-                                        <button id="cancel-delete-hall" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
+                                        <button id="cancel-delete-film" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
                                     </div>
                                 </form>
                             </div>
@@ -433,29 +444,314 @@
             `;
         };
 
+        const elemPopupCancelDeleteFilm = function(title) {
+            return `
+                <div class="popup">
+                    <div class="popup__container">
+                        <div class="popup__content">
+                            <div class="popup__header">
+                                <h2 class="popup__title">
+                                    Удаление фильма
+                                    <a class="popup__dismiss" href="#"><img src="i/close.png" alt="Закрыть"></a>
+                                </h2>
+                            </div>
+                            <div class="popup__wrapper">
+                                <p class="conf-step__paragraph">Фильм '${title}' имеет действующие сеансы. Его нельзя удалять</p>
+                                <div class="conf-step__buttons text-center">
+                                    <button id="cancel-delete-film" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
         Array.from(films).forEach(f => f.addEventListener('click', () => {
+            const filmsblock = [];
+            let filmblock;
+
+            @foreach($films as $film)
+                @foreach($seances as $seance)
+                    @if ($film['id'] === $seance['film_id'])
+                        filmblock = filmsblock.find(fb => fb === '{{ $film['id'] }}');
+                        if (!filmblock) {
+                            filmsblock.push('{{ $film['id'] }}');
+                        }
+                    @endif
+                @endforeach
+            @endforeach
+
             const id = f.dataset.id;
             let urlDestroyFilm = '{{ route('films.destroy', ":id") }}';
             urlDestroyFilm = urlDestroyFilm.replace(':id', id);
 
             const title = f.querySelector('h3').textContent;
-            elemBody.insertAdjacentHTML('afterbegin', elemPopupDeleteFilm(urlDestroyFilm, methodDelete, csrf_field, title));
+            if (filmsblock.find(fb => fb === id)) {
+                elemBody.insertAdjacentHTML('afterbegin', elemPopupCancelDeleteFilm(title));
+            } else {
+                elemBody.insertAdjacentHTML('afterbegin', elemPopupDeleteFilm(urlDestroyFilm, methodDelete, csrf_field, title));
+            }
+
             const elemPopup = document.querySelector('.popup');
             elemPopup.classList.add('active');
             const elemClosePopup = document.querySelector('.popup__dismiss');
             elemClosePopup.addEventListener('click', () => {
                 elemPopup.remove('.popup');
             });
-            const buttonCancelDeleteHall = document.getElementById('cancel-delete-hall');
-            buttonCancelDeleteHall.addEventListener('click', () => {
+            const buttonCancelDeleteFilm = document.getElementById('cancel-delete-film');
+            buttonCancelDeleteFilm.addEventListener('click', () => {
                 elemPopup.remove('.popup');
             });
         }));
 
-        {{--    Отображение сеансов    --}}
-        
+        {{--    Добавление сеансов    --}}
+        let urlStoreSeance = '{{ route('seance.store') }}';
+        const buttonAddSeance = document.getElementById('add-seance');
+        const elemPopupAddSeance = function(url, csrf_field, optionsHalls, optionsFilms) {
+            return `
+                <div class="popup">
+                    <div class="popup__container">
+                        <div class="popup__content">
+                            <div class="popup__header">
+                                <h2 class="popup__title">
+                                    Добавление сеанса
+                                    <a class="popup__dismiss" href="#"><img src="i/close.png" alt="Закрыть"></a>
+                                </h2>
+                            </div>
+                            <div class="popup__wrapper">
+                                <form action="${url}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                                    ${csrf_field}
+                                    <label class="conf-step__label conf-step__label-fullsize" for="name">Название зала
+                                        <select class="conf-step__input" name="hall" required>
+                                            ${optionsHalls}
+                                        </select>
+                                    </label>
+                                    <label class="conf-step__label conf-step__label-fullsize" for="name">
+                                        Время начала
+                                        <input class="conf-step__input" type="time" value="00:00" name="start_time" required>
+                                    </label>
+                                    <label class="conf-step__label conf-step__label-fullsize" for="name">Название фильма
+                                        <select class="conf-step__input" name="film" required>
+                                            ${optionsFilms}
+                                        </select>
+                                    </label>
+                                    <div class="conf-step__buttons text-center">
+                                        <input id="send-seance" type="submit" value="Добавить" class="conf-step__button conf-step__button-accent">
+                                        <button id="cancel-add-seance" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
-        
+        buttonAddSeance.addEventListener('click', () => {
+            let optionsFilms = '';
+            @if (count($films) > 0)
+                @foreach($films as $key => $film)
+                    @if ($key !== 0)
+                        optionsFilms += '<option data-duration="{{ $film->duration }}" value="{{ $film->id }}">{{ $film->title }}</option>';
+                    @else
+                        optionsFilms += '<option data-duration="{{ $film->duration }}" value="{{ $film->id }}" selected>{{ $film->title }}</option>';
+                    @endif
+                @endforeach
+            @endif
+
+            let optionsHalls = '';
+            @if (count($halls) > 0)
+                @foreach($halls as $key => $hall)
+                    @if ($key !== 0)
+                        optionsHalls += '<option value="{{ $hall->id }}">{{ $hall->title }}</option>';
+                    @else
+                        optionsHalls += '<option value="{{ $hall->id }}" selected>{{ $hall->title }}</option>';
+                    @endif
+                @endforeach
+            @endif
+
+            const netSeances = {};
+
+            @foreach($halls as $hall)
+                netSeances['{{ $hall['id'] }}'] = [];
+                @foreach($seances as $seance)
+                    @if ($hall['id'] === $seance['hall_id'])
+                        @foreach($films as $film)
+                            @if ($film['id'] === $seance['film_id'])
+                                netSeances['{{ $hall['id'] }}'].push({duration: '{{ $film['duration'] }}', timeBegin: '{{ $seance['time_begin'] }}'})
+                            @endif
+                        @endforeach
+                    @endif
+                @endforeach
+            @endforeach
+
+            for (let i = 0; i < Object.keys(netSeances).length; i++) {
+                if (Object.values(netSeances)[i].length === 0) {
+                    delete netSeances[Object.keys(netSeances)[i]];
+                }
+            }
+
+            elemBody.insertAdjacentHTML('afterbegin', elemPopupAddSeance(urlStoreSeance, csrf_field, optionsHalls, optionsFilms));
+            const elemPopup = document.querySelector('.popup');
+            elemPopup.classList.add('active');
+            const elemClosePopup = document.querySelector('.popup__dismiss');
+            elemClosePopup.addEventListener('click', () => {
+                elemPopup.remove('.popup');
+            });
+            const buttonCancelAddSeance = document.getElementById('cancel-add-seance');
+            buttonCancelAddSeance.addEventListener('click', () => {
+                elemPopup.remove('.popup');
+            });
+
+            const selectHall = document.querySelector('select[name="hall"]');
+            const selectFilm = document.querySelector('select[name="film"]');
+            const inputStartTime = document.querySelector('input[name="start_time"]');
+
+            function getAttrSelect(selectHall, selectFilm) {
+                const optionHallSelected = selectHall.options[selectHall.selectedIndex];
+                const optionFilmSelectedDuration = +selectFilm.options[selectFilm.selectedIndex].dataset.duration;
+                const timeBlock = [];
+                netSeances[optionHallSelected.value].forEach(a => {
+                    const time = a.timeBegin.split(':');
+                    const hour = +time[0] * 60;
+                    const minute = +time[1];
+                    const timeBegin = hour + minute;
+                    const timeEnd = timeBegin + +a.duration;
+                    for (let i = timeBegin; i <= timeEnd; i++) {
+                        timeBlock.push(i);
+                    }
+                });
+                
+                const timeNewDurationFilm = [];
+                const time = inputStartTime.value.split(':');
+                const hour = +time[0] * 60;
+                const minute = +time[1];
+                const timeBegin = hour + minute;
+                const timeEnd = timeBegin + +optionFilmSelectedDuration;
+                for (let i = timeBegin; i <= timeEnd; i++) {
+                    timeNewDurationFilm.push(i);
+                }
+
+                const result = timeNewDurationFilm.some(a => timeBlock.some(arg => arg === a));
+
+                const elemDiv = document.querySelector('.popup .conf-step__buttons');
+                const inputSendSeance = document.getElementById('send-seance');
+                const messageErrorDuration = '<p id="message-error-duration">* Нельзя создать сеанс с указанными параметрами. Время в зале занято другим фильмом</p>';
+                if (result) {
+                    if (!document.getElementById('message-error-duration')) {
+                        elemDiv.insertAdjacentHTML('beforebegin', messageErrorDuration);
+                    }
+                    inputSendSeance.disabled = true;
+                } else {
+                    if (document.getElementById('message-error-duration')) {
+                        document.getElementById('message-error-duration').remove();
+                    }
+                    inputSendSeance.disabled = false;
+                }
+            }
+
+            getAttrSelect(selectHall, selectFilm);
+            
+            selectHall.addEventListener('change', () => {
+                getAttrSelect(selectHall, selectFilm);
+            });
+            selectFilm.addEventListener('change', () => {
+                getAttrSelect(selectHall, selectFilm);
+            });
+            inputStartTime.addEventListener('change', () => {
+                getAttrSelect(selectHall, selectFilm);
+            });
+        });
+
+        {{--    Удаление сеансов    --}}
+        const seances = document.querySelectorAll('.conf-step__seances-movie');
+        const elemPopupDeleteSeance = function(url, method, csrf_field, title) {
+            return `
+                <div class="popup">
+                    <div class="popup__container">
+                        <div class="popup__content">
+                            <div class="popup__header">
+                                <h2 class="popup__title">
+                                    Снятие с сеанса
+                                    <a class="popup__dismiss" href="#"><img src="i/close.png" alt="Закрыть"></a>
+                                </h2>
+                            </div>
+                            <div class="popup__wrapper">
+                                <form action="${url}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                                    ${csrf_field}
+                                    ${method}
+                                    <p class="conf-step__paragraph">Вы действительно хотите снять с сеанса фильм '${title}'?</p>
+                                    <div class="conf-step__buttons text-center">
+                                        <input type="submit" value="Снять" class="conf-step__button conf-step__button-accent">
+                                        <button id="cancel-delete-seance" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const elemPopupCancelDeleteSeance = function(title) {
+            return `
+                <div class="popup">
+                    <div class="popup__container">
+                        <div class="popup__content">
+                            <div class="popup__header">
+                                <h2 class="popup__title">
+                                    Снятие с сеанса
+                                    <a class="popup__dismiss" href="#"><img src="i/close.png" alt="Закрыть"></a>
+                                </h2>
+                            </div>
+                            <div class="popup__wrapper">
+                                <p class="conf-step__paragraph">Продажа билетов на сеанс фильма '${title}' еще идет. Нельзя удалить этот сеанс</p>
+                                <div class="conf-step__buttons text-center">
+                                    <button id="cancel-delete-seance" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        Array.from(seances).forEach(s => s.addEventListener('click', () => {
+            const seancesBlock = [];
+
+            @foreach($halls as $hall)
+                @if ($hall['is_sell_ticket'] === 'true')
+                    @foreach($seances as $seance)
+                        @if ($hall['id'] === $seance['hall_id'])
+                            seancesBlock.push('{{ $seance['id'] }}');
+                        @endif
+                    @endforeach
+                @endif
+            @endforeach
+
+            const id = s.dataset.seanceId;
+            let urlDestroySeance = '{{ route('seance.destroy', ":id") }}';
+            urlDestroySeance = urlDestroySeance.replace(':id', id);
+            const title = s.querySelector('.conf-step__seances-movie-title').textContent;
+
+            if (seancesBlock.find(sb => sb === id)) {
+                elemBody.insertAdjacentHTML('afterbegin', elemPopupCancelDeleteSeance(title));
+            } else {
+                elemBody.insertAdjacentHTML('afterbegin', elemPopupDeleteSeance(urlDestroySeance, methodDelete, csrf_field, title));
+            }
+
+            const elemPopup = document.querySelector('.popup');
+            elemPopup.classList.add('active');
+            const elemClosePopup = document.querySelector('.popup__dismiss');
+            elemClosePopup.addEventListener('click', () => {
+                elemPopup.remove('.popup');
+            });
+            const buttonCancelDeleteSeance = document.getElementById('cancel-delete-seance');
+            buttonCancelDeleteSeance.addEventListener('click', () => {
+                elemPopup.remove('.popup');
+            });
+        }));
 
     </script>
     <script src="js/ConfHalls.js"></script>

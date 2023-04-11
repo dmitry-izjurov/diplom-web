@@ -18,6 +18,7 @@ return new class extends Migration
             $table->bigInteger('hall_id')->unsigned();
             $table->foreign('film_id')->references('id')->on('films');
             $table->foreign('hall_id')->references('id')->on('halls');
+            $table->timestamps();
         });
     }
 

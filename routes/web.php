@@ -25,6 +25,8 @@ Route::patch('/update-hall', [\App\Http\Controllers\HallsController::class, 'upd
 Route::delete('/delete-hall/{id}', [\App\Http\Controllers\HallsController::class, 'destroy'])->name('halls.destroy');
 Route::post('/add-film', [\App\Http\Controllers\FilmController::class, 'store'])->name('films.store');
 Route::delete('/delete-film/{id}', [\App\Http\Controllers\FilmController::class, 'destroy'])->name('films.destroy');
+Route::post('/add-seance', [\App\Http\Controllers\SeanceController::class, 'store'])->name('seance.store');
+Route::delete('/delete-seance/{id}', [\App\Http\Controllers\SeanceController::class, 'destroy'])->name('seance.destroy');
 
 Route::get('/laravel', function () {
     return view('welcome');

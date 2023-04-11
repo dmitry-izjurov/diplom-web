@@ -437,6 +437,7 @@ input[type='radio'], input[type='submit'], button, .conf-step__header, select {
   height: 40px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
+  cursor: pointer;
   padding: 10px 2px 10px 10px; }
   .conf-step__seances-movie .conf-step__seances-movie-title {
     overflow: hidden;
@@ -560,4 +561,9 @@ input[type='radio'], input[type='submit'], button, .conf-step__header, select {
 
 .conf-step__button.conf-step__button_stop:focus {
     background-color: #e93c3c;
+}
+
+#message-error-duration {
+  color: red;
+  font-size: 16px;
 }
