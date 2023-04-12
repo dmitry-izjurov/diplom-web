@@ -13,11 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('main');
-});
-
 Auth::routes(['register' => false]);
+
+Route::get('/', [\App\Http\Controllers\MainController::class, 'index'])->name('main.index');
+Route::get('/seance/{id}', [\App\Http\Controllers\MainController::class, 'show'])->name('main.show');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
 Route::post('/create-hall', [\App\Http\Controllers\HallsController::class, 'store'])->name('halls.store');

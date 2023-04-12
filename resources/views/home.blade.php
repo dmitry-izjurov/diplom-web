@@ -586,11 +586,11 @@
                 @endforeach
             @endforeach
 
-            for (let i = 0; i < Object.keys(netSeances).length; i++) {
-                if (Object.values(netSeances)[i].length === 0) {
-                    delete netSeances[Object.keys(netSeances)[i]];
-                }
-            }
+            // for (let i = 0; i < Object.keys(netSeances).length; i++) {
+            //     if (Object.values(netSeances)[i].length === 0) {
+            //         delete netSeances[Object.keys(netSeances)[i]];
+            //     }
+            // }
 
             elemBody.insertAdjacentHTML('afterbegin', elemPopupAddSeance(urlStoreSeance, csrf_field, optionsHalls, optionsFilms));
             const elemPopup = document.querySelector('.popup');
@@ -618,7 +618,7 @@
                     const minute = +time[1];
                     const timeBegin = hour + minute;
                     const timeEnd = timeBegin + +a.duration;
-                    for (let i = timeBegin; i <= timeEnd; i++) {
+                    for (let i = timeBegin; i <= timeEnd + 10; i++) {
                         timeBlock.push(i);
                     }
                 });
@@ -629,7 +629,7 @@
                 const minute = +time[1];
                 const timeBegin = hour + minute;
                 const timeEnd = timeBegin + +optionFilmSelectedDuration;
-                for (let i = timeBegin; i <= timeEnd; i++) {
+                for (let i = timeBegin; i <= timeEnd + 10; i++) {
                     timeNewDurationFilm.push(i);
                 }
 

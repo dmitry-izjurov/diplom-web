@@ -189,6 +189,7 @@ body {
     color: #000000;
     text-decoration: none;
     font-size: 1.5rem;
+    transition-duration: 500ms;
 }
 
 /* ~~~~~~~~~~~~ Кинозал ~~~~~~~~~~~~ */
@@ -455,4 +456,9 @@ body {
     display: flex;
     justify-content: center;
     font-size: 36px;
+}
+
+.movie .movie-seances__hall .movie-seances__time:hover {
+    background-color: #ff9595;
+    transition-duration: 500ms;
 }
