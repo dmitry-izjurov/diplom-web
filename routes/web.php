@@ -17,6 +17,8 @@ Auth::routes(['register' => false]);
 
 Route::get('/', [\App\Http\Controllers\MainController::class, 'index'])->name('main.index');
 Route::get('/seance/{id}', [\App\Http\Controllers\MainController::class, 'show'])->name('main.show');
+Route::patch('/seance/{id}', [\App\Http\Controllers\MainController::class, 'update'])->name('main.update');
+Route::get('/seance/{id}/payment', [\App\Http\Controllers\SeanceController::class, 'show'])->name('seance.show');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
 Route::post('/create-hall', [\App\Http\Controllers\HallsController::class, 'store'])->name('halls.store');

@@ -536,6 +536,8 @@
                                             ${optionsFilms}
                                         </select>
                                     </label>
+                                    <input type="hidden" name="types_of_chairs" value="">
+                                    <input type="hidden" name="price_of_chair" value="">
                                     <div class="conf-step__buttons text-center">
                                         <input id="send-seance" type="submit" value="Добавить" class="conf-step__button conf-step__button-accent">
                                         <button id="cancel-add-seance" class="conf-step__button conf-step__button-regular" type="button">Отменить</button>
@@ -564,9 +566,9 @@
             @if (count($halls) > 0)
                 @foreach($halls as $key => $hall)
                     @if ($key !== 0)
-                        optionsHalls += '<option value="{{ $hall->id }}">{{ $hall->title }}</option>';
+                        optionsHalls += '<option data-types-of-chairs="{{ $hall->types_of_chairs }}" data-price-of-chair="{{ $hall->price_of_chair }}" value="{{ $hall->id }}">{{ $hall->title }}</option>';
                     @else
-                        optionsHalls += '<option value="{{ $hall->id }}" selected>{{ $hall->title }}</option>';
+                        optionsHalls += '<option data-types-of-chairs="{{ $hall->types_of_chairs }}" data-price-of-chair="{{ $hall->price_of_chair }}" value="{{ $hall->id }}" selected>{{ $hall->title }}</option>';
                     @endif
                 @endforeach
             @endif
@@ -649,6 +651,11 @@
                     }
                     inputSendSeance.disabled = false;
                 }
+
+                const inputTypesOfChairs = document.querySelector('input[name="types_of_chairs"]');
+                inputTypesOfChairs.value = optionHallSelected.dataset.typesOfChairs;
+                const inputPriceOfChair = document.querySelector('input[name="price_of_chair"]');
+                inputPriceOfChair.value = optionHallSelected.dataset.priceOfChair;
             }
 
             getAttrSelect(selectHall, selectFilm);

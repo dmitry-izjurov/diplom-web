@@ -32,6 +32,8 @@ class SeanceController extends Controller
         $seance->time_begin = $request->start_time;
         $seance->film_id = $request->film;
         $seance->hall_id = $request->hall;
+        $seance->types_of_chairs = $request->types_of_chairs;
+        $seance->price_of_chair = $request->price_of_chair;
         $seance->save();
 
         return redirect()->route('home.index');
@@ -40,9 +42,23 @@ class SeanceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Seance $seance)
+    public function show($id)
     {
-        //
+        $seance = Seance::find($id);
+        session_start();
+        if (!isset($_SESSION['selected_chairs'], $_SESSION['cost'], $_SESSION['hall'], $_SESSION['film'])) {
+            return redirect()->route('main.index');
+        }
+        $chairs = $_SESSION['selected_chairs'];
+        $cost = $_SESSION['cost'];
+        $hall = $_SESSION['hall'];
+        $film = $_SESSION['film'];
+        return view('payment',
+            ['chairs' => $chairs,
+             'cost' => $cost,
+             'hall' => $hall,
+             'film' => $film,
+             'seance' => $seance]);
     }
 
     /**

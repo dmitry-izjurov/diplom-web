@@ -43,9 +43,15 @@ class MainController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Main $main)
+    public function show($id)
     {
-        //
+        $seance = Seance::find($id);
+        $halls = Halls::all();
+        $films= Film::all();
+        return view('seance',
+            ['seance' => $seance,
+            'halls' => $halls,
+            'films' => $films]);
     }
 
     /**
@@ -59,9 +65,18 @@ class MainController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Main $main)
+    public function update(Request $request, $id)
     {
-        //
+        $seance = Seance::find($id);
+        $seance->types_of_chairs = $request->types_of_chairs;
+        $seance->update();
+        session_start();
+        $_SESSION['selected_chairs'] = $request->selected_chairs;
+        $_SESSION['cost'] = $request->cost;
+        $_SESSION['hall'] = $request->hall;
+        $_SESSION['film'] = $request->film;
+
+        return redirect()->route('seance.show', ['id' => $id]);
     }
 
     /**
