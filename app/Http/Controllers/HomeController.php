@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Film;
-use App\Models\Halls;
+use App\Models\Hall;
 use App\Models\Seance;
 use Illuminate\Http\Request;
 
@@ -24,9 +24,9 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(): \Illuminate\Contracts\Support\Renderable
     {
-        $halls = Halls::all();
+        $halls = Hall::all();
         $films= Film::all();
         $seances = Seance::all();
         return view('home',

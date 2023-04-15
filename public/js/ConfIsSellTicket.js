@@ -25,24 +25,23 @@ class ConfIsSellTicket {
         if (formIsSellTicket.querySelector('button')) {
             formIsSellTicket.querySelector('button').remove();
         }
-
-        if (param === 'true') {
+        if (!!+param) {
             formIsSellTicket.insertAdjacentHTML('beforeend', buttonFalse);
             buttonFalse = document.getElementById('buttonSellFalse');
-            this.submit(buttonFalse, inputSellTicket, param);
-        } else if (param === 'false') {
+            this.submit(buttonFalse, inputSellTicket, !!+param);
+        } else {
             formIsSellTicket.insertAdjacentHTML('beforeend', buttonTrue);
             buttonTrue = document.getElementById('buttonSellTrue');
-            this.submit(buttonTrue, inputSellTicket, param);
+            this.submit(buttonTrue, inputSellTicket, !!+param);
         }
     }
 
     submit(button, input, param) {
         button.addEventListener('click', () => {
-            if (param === 'true') {
-                input.value = `${this.initElemConfHalls.dataset.id}=false`;
-            } else if (param === 'false') {
-                input.value = `${this.initElemConfHalls.dataset.id}=true`;
+            if (param) {
+                input.value = `${this.initElemConfHalls.dataset.id}=0`;
+            } else {
+                input.value = `${this.initElemConfHalls.dataset.id}=1`;
             }
         });
     }

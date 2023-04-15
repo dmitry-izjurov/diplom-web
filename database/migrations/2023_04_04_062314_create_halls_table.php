@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title')->unique();
             $table->timestamps();
-            $table->string('is_sell_ticket')->default('false');
+            $table->boolean('is_sell_ticket')->default(false);
             $table->string('types_of_chairs')->default('d,d,d,s,s,d,d,d|d,d,s,s,s,s,d,d|d,s,s,s,s,s,s,d|s,s,s,v,v,s,s,s|s,s,v,v,v,v,s,d|s,s,v,v,v,v,s,d|s,s,v,v,v,v,s,d|s,s,s,s,s,s,s,d|s,s,s,s,s,s,s,s|s,s,s,s,s,s,s,s');
             $table->string('price_of_chair')->default('s:150|v:350');
         });

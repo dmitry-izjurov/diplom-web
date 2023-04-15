@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Seance;
 use Illuminate\Http\Request;
+//use App\Http\Requests\SeanceRequest;
 
 class SeanceController extends Controller
 {
@@ -26,7 +27,7 @@ class SeanceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $seance = new Seance();
         $seance->time_begin = $request->start_time;
@@ -42,17 +43,18 @@ class SeanceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(int $id): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
     {
         $seance = Seance::find($id);
-        session_start();
-        if (!isset($_SESSION['selected_chairs'], $_SESSION['cost'], $_SESSION['hall'], $_SESSION['film'])) {
+        $chairs = session('selected_chairs');
+        $cost = session('cost');
+        $hall = session('hall');
+        $film = session('film');
+
+        if (!isset($chairs, $cost, $hall, $film)) {
             return redirect()->route('main.index');
         }
-        $chairs = $_SESSION['selected_chairs'];
-        $cost = $_SESSION['cost'];
-        $hall = $_SESSION['hall'];
-        $film = $_SESSION['film'];
+
         return view('payment',
             ['chairs' => $chairs,
              'cost' => $cost,
@@ -80,7 +82,7 @@ class SeanceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse
     {
         $seance = Seance::find($id);
 

@@ -26,13 +26,18 @@ class FilmController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $film = new Film();
-        $film->title = $request->title;
-        $film->duration = $request->duration;
-        $film->save();
-
+        $validated = $request->validate([
+            'title' => ['required', 'unique:films','string', 'max:60'],
+            'duration' => ['required', 'integer', 'min:30', 'max:220']
+        ]);
+        if ($validated) {
+            $film->title = $request->title;
+            $film->duration = $request->duration;
+            $film->save();
+        }
         return redirect()->route('home.index');
     }
 
@@ -63,7 +68,7 @@ class FilmController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse
     {
         $film = Film::find($id);
         if ($film) {

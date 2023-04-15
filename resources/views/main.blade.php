@@ -51,7 +51,7 @@
                     <h3 class="movie-seances__hall-title">{{ $hall->title }}</h3>
                     <ul class="movie-seances__list">
                         @foreach($seances as $seance)
-                            @if ($film['id'] === $seance['film_id'] && $hall['id'] === $seance['hall_id'] && $hall['is_sell_ticket'] === 'true')
+                            @if ($film['id'] === $seance['film_id'] && $hall['id'] === $seance['hall_id'] && $hall['is_sell_ticket'])
                             <li class="movie-seances__time-block" data-time="{{ $seance['time_begin'] }}"><a class="movie-seances__time" href="{{ route('main.show', ['id' => $seance['id']]) }}">{{ $seance['time_begin'] }}</a></li>
                             @endif
                         @endforeach

@@ -21,9 +21,9 @@ Route::patch('/seance/{id}', [\App\Http\Controllers\MainController::class, 'upda
 Route::get('/seance/{id}/payment', [\App\Http\Controllers\SeanceController::class, 'show'])->name('seance.show');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
-Route::post('/create-hall', [\App\Http\Controllers\HallsController::class, 'store'])->name('halls.store');
-Route::patch('/update-hall', [\App\Http\Controllers\HallsController::class, 'update'])->name('halls.update');
-Route::delete('/delete-hall/{id}', [\App\Http\Controllers\HallsController::class, 'destroy'])->name('halls.destroy');
+Route::post('/create-hall', [\App\Http\Controllers\HallController::class, 'store'])->name('halls.store');
+Route::patch('/update-hall', [\App\Http\Controllers\HallController::class, 'update'])->name('halls.update');
+Route::delete('/delete-hall/{id}', [\App\Http\Controllers\HallController::class, 'destroy'])->name('halls.destroy');
 Route::post('/add-film', [\App\Http\Controllers\FilmController::class, 'store'])->name('films.store');
 Route::delete('/delete-film/{id}', [\App\Http\Controllers\FilmController::class, 'destroy'])->name('films.destroy');
 Route::post('/add-seance', [\App\Http\Controllers\SeanceController::class, 'store'])->name('seance.store');
