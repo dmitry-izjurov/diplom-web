@@ -29,7 +29,7 @@
                 <p id="ticket-hint" class="ticket__hint">После оплаты билет будет доступен в этом окне, а также придёт вам на почту. Покажите QR-код нашему контроллёру у входа в зал.</p>
                 <p class="ticket__hint">Приятного просмотра!</p>
             </div>
-        </section>     
+        </section>
     </main>
     <div class="block__link-main">
         <a class="link-main" href="{{ route('main.index') }}">На главную</a>

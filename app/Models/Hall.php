@@ -9,9 +9,9 @@ class Hall extends Model
 {
     use HasFactory;
 
-    public function makeUpdate(mixed $typerequest, string $type): void
+    public function makeUpdate(string $typeRequest, string $type): void
     {
-        $values = explode('-', $typerequest);
+        $values = explode('-', $typeRequest);
         foreach ($values as $value) {
             $idArr = explode('=', $value);
             $id = $idArr[0];
